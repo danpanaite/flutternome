@@ -17,8 +17,8 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     FlutterMidi.unmute();
-    rootBundle.load("assets/Piano.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Piano.SF2");
+    rootBundle.load("assets/Happy_Mellow.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
     });
 
     super.initState();
@@ -29,12 +29,12 @@ class _MyAppState extends State<MyApp> {
     var buttonGrid = Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(gridSize, (index) {
+      children: List.generate(gridSize, (columnIndex) {
         return Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(gridSize, (index) {
-            return GridButton();
+          children: List.generate(gridSize, (rowIndex) {
+            return GridButton(rowIndex);
           }),
         );
       }),

@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 
+final scale = [60, 63, 65, 67, 70];
+
 class GridButton extends StatefulWidget {
+  final int row;
+
+  const GridButton(this.row, {Key key}) : super(key: key);
+
   @override
   _GridButtonState createState() => _GridButtonState();
 }
 
 class _GridButtonState extends State<GridButton> {
   bool _isSelected = false;
+  int _midiNote;
+
+  @override
+  void initState() {
+    _midiNote = scale[widget.row % 5] + 12 * (widget.row / 5).floor();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +45,9 @@ class _GridButtonState extends State<GridButton> {
       _isSelected = !_isSelected;
 
       if (_isSelected) {
-        FlutterMidi.playMidiNote(midi: 60);
+        FlutterMidi.playMidiNote(midi: _midiNote);
       } else {
-        FlutterMidi.stopMidiNote(midi: 60);
+        FlutterMidi.stopMidiNote(midi: _midiNote);
       }
     });
   }
