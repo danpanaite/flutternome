@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_midi/flutter_midi.dart';
 
 import 'grid_button.dart';
 
@@ -6,7 +8,22 @@ void main() => runApp(MyApp());
 
 const gridSize = 6;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  initState() {
+    FlutterMidi.unmute();
+    rootBundle.load("assets/Piano.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Piano.SF2");
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var buttonGrid = Row(

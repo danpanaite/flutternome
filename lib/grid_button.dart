@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_midi/flutter_midi.dart';
 
 class GridButton extends StatefulWidget {
   @override
@@ -28,6 +29,12 @@ class _GridButtonState extends State<GridButton> {
   void _toggleSelected() {
     setState(() {
       _isSelected = !_isSelected;
+
+      if (_isSelected) {
+        FlutterMidi.playMidiNote(midi: 60);
+      } else {
+        FlutterMidi.stopMidiNote(midi: 60);
+      }
     });
   }
 }
