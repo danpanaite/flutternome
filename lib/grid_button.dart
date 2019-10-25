@@ -5,8 +5,11 @@ final scale = [60, 63, 65, 67, 70];
 
 class GridButton extends StatefulWidget {
   final int row;
+  final bool isTriggered;
+  final Stopwatch stopwatch;
 
-  const GridButton(this.row, {Key key}) : super(key: key);
+  const GridButton(this.row, this.isTriggered, {key, this.stopwatch})
+      : super(key: key);
 
   @override
   _GridButtonState createState() => _GridButtonState();
@@ -25,6 +28,10 @@ class _GridButtonState extends State<GridButton> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isSelected && widget.isTriggered) {
+      FlutterMidi.playMidiNote(midi: _midiNote);
+    }
+
     return Container(
       width: 40,
       height: 40,
@@ -43,12 +50,6 @@ class _GridButtonState extends State<GridButton> {
   void _toggleSelected() {
     setState(() {
       _isSelected = !_isSelected;
-
-      if (_isSelected) {
-        FlutterMidi.playMidiNote(midi: _midiNote);
-      } else {
-        FlutterMidi.stopMidiNote(midi: _midiNote);
-      }
     });
   }
 }

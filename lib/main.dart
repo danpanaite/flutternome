@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
@@ -14,6 +16,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  StreamSubscription<int> _gameSubscription;
+  int _column;
+  Stopwatch _stopwatch = Stopwatch();
+
   @override
   initState() {
     FlutterMidi.unmute();
@@ -21,7 +27,21 @@ class _MyAppState extends State<MyApp> {
       FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
     });
 
+    _gameSubscription = Stream.periodic(Duration(milliseconds: 300),
+            (value) => value = (value + 1) % gridSize)
+        .listen((value) => setState(() {
+              _column = value;
+            }));
+
+    _stopwatch.start();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _gameSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -34,7 +54,8 @@ class _MyAppState extends State<MyApp> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(gridSize, (rowIndex) {
-            return GridButton(rowIndex);
+            return GridButton(rowIndex, columnIndex == _column,
+                stopwatch: _stopwatch);
           }),
         );
       }),
