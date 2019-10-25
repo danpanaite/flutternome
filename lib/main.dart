@@ -1,14 +1,23 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
+import 'package:flutternome/grid.dart';
 
 import 'grid_button.dart';
 
-void main() => runApp(MyApp());
-
 const gridSize = 6;
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      builder: (context) => Grid(gridSize: gridSize),
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -16,8 +25,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  StreamSubscription<int> _gameSubscription;
-  int _column;
   Stopwatch _stopwatch = Stopwatch();
 
   @override
@@ -27,21 +34,11 @@ class _MyAppState extends State<MyApp> {
       FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
     });
 
-    _gameSubscription = Stream.periodic(Duration(milliseconds: 300),
-            (value) => value = (value + 1) % gridSize)
-        .listen((value) => setState(() {
-              _column = value;
-            }));
-
     _stopwatch.start();
 
-    super.initState();
-  }
+    Provider.of<Grid>(context, listen:false).play();
 
-  @override
-  void dispose() {
-    _gameSubscription?.cancel();
-    super.dispose();
+    super.initState();
   }
 
   @override
@@ -54,7 +51,7 @@ class _MyAppState extends State<MyApp> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(gridSize, (rowIndex) {
-            return GridButton(rowIndex, columnIndex == _column,
+            return GridButton(rowIndex, columnIndex,
                 stopwatch: _stopwatch);
           }),
         );

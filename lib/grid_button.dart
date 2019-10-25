@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_midi/flutter_midi.dart';
+import 'package:provider/provider.dart';
+
+import 'grid.dart';
 
 final scale = [60, 63, 65, 67, 70];
 
 class GridButton extends StatefulWidget {
   final int row;
-  final bool isTriggered;
+  final int column;
   final Stopwatch stopwatch;
 
-  const GridButton(this.row, this.isTriggered, {key, this.stopwatch})
+  const GridButton(this.row, this.column, {key, this.stopwatch})
       : super(key: key);
 
   @override
@@ -28,22 +31,28 @@ class _GridButtonState extends State<GridButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isSelected && widget.isTriggered) {
-      FlutterMidi.playMidiNote(midi: _midiNote);
-    }
+    return Consumer<Grid>(
+      builder: (context, grid, child) {
+        if (_isSelected && grid.selectedColumn == widget.column) {
+          FlutterMidi.playMidiNote(midi: _midiNote);
+          print('Midi: ${widget.stopwatch.elapsedMilliseconds}');
+          widget.stopwatch.reset();
+        }
 
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5.0),
-        border: Border.all(width: 2.0, color: Color(0xFF3e3e3e)),
-      ),
-      child: RaisedButton(
-        elevation: 5.0,
-        color: _isSelected ? Color(0xFFffbdc0) : Colors.white,
-        onPressed: _toggleSelected,
-      ),
+        return Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            border: Border.all(width: 2.0, color: Color(0xFF3e3e3e)),
+          ),
+          child: RaisedButton(
+            elevation: 5.0,
+            color: _isSelected ? Color(0xFFffbdc0) : Colors.white,
+            onPressed: _toggleSelected,
+          ),
+        );
+      },
     );
   }
 
