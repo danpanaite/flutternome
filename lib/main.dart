@@ -1,14 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_midi/flutter_midi.dart';
 import 'package:flutternome/grid.dart';
 
 import 'grid_button.dart';
 
-const gridSize = 6;
+final gridSize = 6;
+final buttons = List.generate(
+  gridSize,
+  (columnIndex) => List.generate(
+    gridSize,
+    (rowIndex) => GridButton(rowIndex, columnIndex),
+  ),
+);
 
 void main() {
   runApp(
@@ -25,18 +28,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Stopwatch _stopwatch = Stopwatch();
-
   @override
   initState() {
-    FlutterMidi.unmute();
-    rootBundle.load("assets/Happy_Mellow.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
-    });
-
-    _stopwatch.start();
-
-    Provider.of<Grid>(context, listen:false).play();
+    Provider.of<Grid>(context, listen: false).play();
 
     super.initState();
   }
@@ -46,16 +40,15 @@ class _MyAppState extends State<MyApp> {
     var buttonGrid = Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(gridSize, (columnIndex) {
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(gridSize, (rowIndex) {
-            return GridButton(rowIndex, columnIndex,
-                stopwatch: _stopwatch);
-          }),
-        );
-      }),
+      children: buttons
+          .map(
+            (buttonColumn) => Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttonColumn,
+            ),
+          )
+          .toList(),
     );
 
     return MaterialApp(
