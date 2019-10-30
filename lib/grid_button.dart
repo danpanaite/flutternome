@@ -21,8 +21,8 @@ class _GridButtonState extends State<GridButton> {
     return Consumer<Grid>(
       builder: (context, grid, child) {
         return Container(
-          width: 40,
-          height: 40,
+          width: 27,
+          height: 27,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             border: Border.all(width: 2.0, color: Color(0xFF3e3e3e)),

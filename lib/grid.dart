@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
-import 'package:quiver/async.dart';
 
 import 'grid_button.dart';
 
@@ -19,7 +18,7 @@ class Grid extends ChangeNotifier {
   List<int> midiNotes;
   Stopwatch stopwatch = new Stopwatch();
 
-  Grid({this.gridSize = 6, this.playSpeed = 300}) {
+  Grid({this.gridSize = 6, this.playSpeed = 150}) {
     midiNotes = List.generate(gridSize, (row) {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
@@ -44,7 +43,7 @@ class Grid extends ChangeNotifier {
       FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
     });
 
-    subscription = Metronome.periodic(
+    subscription = Stream.periodic(
       Duration(milliseconds: playSpeed),
     ).listen((value) {
       selectedColumn = (selectedColumn + 1) % gridSize;

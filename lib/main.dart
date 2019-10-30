@@ -4,7 +4,7 @@ import 'package:flutternome/grid.dart';
 
 import 'grid_button.dart';
 
-final gridSize = 6;
+final gridSize = 10;
 final buttons = List.generate(
   gridSize,
   (columnIndex) => List.generate(
@@ -30,7 +30,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   initState() {
-    Provider.of<Grid>(context, listen: false).play();
+    // Provider.of<Grid>(context, listen: false).play();
 
     super.initState();
   }
