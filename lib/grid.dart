@@ -14,12 +14,15 @@ class Grid extends ChangeNotifier {
   final selectedButtons = new Map<int, List<int>>();
 
   int selectedColumn = 0;
-  StreamSubscription subscription;
-  List<int> midiNotes;
-  Stopwatch stopwatch = new Stopwatch();
+
+  StreamSubscription _subscription;
+  List<int> _midiNotes;
+  Stopwatch _stopwatch = new Stopwatch();
+
+  bool get isPlaying => _subscription != null && !_subscription.isPaused;
 
   Grid({this.gridSize = 6, this.playSpeed = 150}) {
-    midiNotes = List.generate(gridSize, (row) {
+    _midiNotes = List.generate(gridSize, (row) {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
   }
@@ -34,32 +37,39 @@ class Grid extends ChangeNotifier {
     selectedButtons[button.column]?.removeWhere((row) => row == button.row);
   }
 
+  void pause() {
+    _subscription.pause();
+    notifyListeners();
+  }
+
   void play() {
-    subscription?.cancel();
-    stopwatch.start();
+    _subscription?.cancel();
+    _stopwatch.start();
 
     FlutterMidi.unmute();
     rootBundle.load("assets/Happy_Mellow.sf2").then((sf2) {
       FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
     });
 
-    subscription = Stream.periodic(
+    _subscription = Stream.periodic(
       Duration(milliseconds: playSpeed),
     ).listen((value) {
       selectedColumn = (selectedColumn + 1) % gridSize;
 
       selectedButtons[selectedColumn]?.forEach((row) {
-        FlutterMidi.playMidiNote(midi: midiNotes[row]);
+        FlutterMidi.playMidiNote(midi: _midiNotes[row]);
       });
 
-      print(stopwatch.elapsedMilliseconds);
-      stopwatch.reset();
+      print(_stopwatch.elapsedMilliseconds);
+      _stopwatch.reset();
     });
+
+    notifyListeners();
   }
 
   @override
   void dispose() {
-    subscription?.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 }

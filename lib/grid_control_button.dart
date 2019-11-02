@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 class GridControlButton extends StatelessWidget {
   final String label;
   final Color color;
+
   final Function() onPressed;
 
   const GridControlButton({
     Key key,
     this.label,
     this.color = Colors.white,
-    this.onPressed,
+    @required this.onPressed,
   }) : super(key: key);
 
   @override
