@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutternome/grid.dart';
 
 import 'grid_button.dart';
+import 'grid_control_button.dart';
 
 final gridSize = 10;
 final buttons = List.generate(
@@ -58,14 +59,48 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
         body: Center(
-          child: Container(
-            width: 350,
-            height: 350,
-            decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(5.0),
-                border: Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
-            child: buttonGrid,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 350,
+                height: 350,
+                decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(5.0),
+                    border: Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
+                child: buttonGrid,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Container(
+                  width: 350,
+                  height: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: GridControlButton(label: 'PLAY'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: GridControlButton(label: 'RESET'),
+                        ),
+                        GridControlButton(label: 'TURBO'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
