@@ -23,6 +23,11 @@ class Grid extends ChangeNotifier {
     _midiNotes = List.generate(gridSize, (row) {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
+
+    FlutterMidi.unmute();
+    rootBundle.load("assets/Happy_Mellow.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
+    });
   }
 
   bool get isPlaying => _subscription != null && !_subscription.isPaused;
@@ -65,27 +70,24 @@ class Grid extends ChangeNotifier {
     _subscription?.cancel();
     _stopwatch.start();
 
-    FlutterMidi.unmute();
-    rootBundle.load("assets/Happy_Mellow.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
-    });
-
     _subscription = Stream.periodic(
       Duration(milliseconds: playSpeed),
-    ).listen((value) {
-      selectedColumn = (selectedColumn + 1) % gridSize;
-
-      _selectedButtons[selectedColumn]?.forEach((row, isSelected) {
-        if (isSelected) {
-          FlutterMidi.playMidiNote(midi: _midiNotes[row]);
-        }
-      });
-
-      print(_stopwatch.elapsedMilliseconds);
-      _stopwatch.reset();
-    });
+    ).listen((value) => playMidiNotes);
 
     notifyListeners();
+  }
+
+  void playMidiNotes() {
+    selectedColumn = (selectedColumn + 1) % gridSize;
+
+    _selectedButtons[selectedColumn]?.forEach((row, isSelected) {
+      if (isSelected) {
+        FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+      }
+    });
+
+    print(_stopwatch.elapsedMilliseconds);
+    _stopwatch.reset();
   }
 
   @override
