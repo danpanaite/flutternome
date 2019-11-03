@@ -11,7 +11,7 @@ final scale = [60, 63, 65, 67, 70];
 class Grid extends ChangeNotifier {
   final int gridSize;
   final int playSpeed;
-  final selectedButtons = new Map<int, List<int>>();
+  Map<int, Map<int, bool>> _selectedButtons = new Map<int, Map<int, bool>>();
 
   int selectedColumn = 0;
 
@@ -19,22 +19,41 @@ class Grid extends ChangeNotifier {
   List<int> _midiNotes;
   Stopwatch _stopwatch = new Stopwatch();
 
-  bool get isPlaying => _subscription != null && !_subscription.isPaused;
-
   Grid({this.gridSize = 6, this.playSpeed = 150}) {
     _midiNotes = List.generate(gridSize, (row) {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
   }
 
+  bool get isPlaying => _subscription != null && !_subscription.isPaused;
+
+  bool isButtonSelected(int column, int row) {
+    if (!_selectedButtons.containsKey(column) ||
+        !_selectedButtons[column].containsKey(row)) {
+      return false;
+    }
+
+    return _selectedButtons[column][row];
+  }
+
   void addButton(GridButton button) {
-    selectedButtons.containsKey(button.column)
-        ? selectedButtons[button.column].add(button.row)
-        : selectedButtons.putIfAbsent(button.column, () => [button.row]);
+    if (!_selectedButtons.containsKey(button.column)) {
+      _selectedButtons[button.column] = new Map<int, bool>();
+    }
+
+    _selectedButtons[button.column][button.row] = true;
+    notifyListeners();
   }
 
   void removeButton(GridButton button) {
-    selectedButtons[button.column]?.removeWhere((row) => row == button.row);
+    _selectedButtons[button.column][button.row] = false;
+    notifyListeners();
+  }
+
+  void reset() {
+    _subscription.pause();
+    _selectedButtons = new Map<int, Map<int, bool>>();
+    notifyListeners();
   }
 
   void pause() {
@@ -56,8 +75,10 @@ class Grid extends ChangeNotifier {
     ).listen((value) {
       selectedColumn = (selectedColumn + 1) % gridSize;
 
-      selectedButtons[selectedColumn]?.forEach((row) {
-        FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+      _selectedButtons[selectedColumn]?.forEach((row, isSelected) {
+        if (isSelected) {
+          FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+        }
       });
 
       print(_stopwatch.elapsedMilliseconds);

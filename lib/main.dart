@@ -103,7 +103,7 @@ class _MyAppState extends State<MyApp> {
                             padding: const EdgeInsets.only(right: 8.0),
                             child: GridControlButton(
                               label: 'RESET',
-                              onPressed: () {},
+                              onPressed: () => grid.reset(),
                             ),
                           ),
                           GridControlButton(

@@ -3,18 +3,11 @@ import 'package:provider/provider.dart';
 
 import 'grid.dart';
 
-class GridButton extends StatefulWidget {
+class GridButton extends StatelessWidget {
   final int row;
   final int column;
 
   const GridButton(this.row, this.column, {key}) : super(key: key);
-
-  @override
-  _GridButtonState createState() => _GridButtonState();
-}
-
-class _GridButtonState extends State<GridButton> {
-  bool _isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +22,17 @@ class _GridButtonState extends State<GridButton> {
           ),
           child: RaisedButton(
             elevation: 5.0,
-            color: _isSelected ? Color(0xFFffbdc0) : Colors.white,
-            onPressed: _toggleSelected,
+            color: grid.isButtonSelected(column, row)
+                ? Color(0xFFffbdc0)
+                : Colors.white,
+            onPressed: grid.isButtonSelected(column, row)
+                ? () =>
+                    Provider.of<Grid>(context).removeButton(this)
+                : () =>
+                    Provider.of<Grid>(context).addButton(this),
           ),
         );
       },
     );
-  }
-
-  void _toggleSelected() {
-    if (!_isSelected) {
-      Provider.of<Grid>(context, listen: false).addButton(widget);
-    } else {
-      Provider.of<Grid>(context, listen: false).removeButton(widget);
-    }
-
-    setState(() {
-      _isSelected = !_isSelected;
-    });
   }
 }
