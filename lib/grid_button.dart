@@ -23,13 +23,11 @@ class GridButton extends StatelessWidget {
           child: RaisedButton(
             elevation: 5.0,
             color: grid.isButtonSelected(column, row)
-                ? Color(0xFFffbdc0)
+                ? grid.isPlaying ? Color(0xFFcdedfd) : Color(0xFFffbdc0)
                 : Colors.white,
             onPressed: grid.isButtonSelected(column, row)
-                ? () =>
-                    Provider.of<Grid>(context).removeButton(this)
-                : () =>
-                    Provider.of<Grid>(context).addButton(this),
+                ? () => Provider.of<Grid>(context).removeButton(this)
+                : () => Provider.of<Grid>(context).addButton(this),
           ),
         );
       },

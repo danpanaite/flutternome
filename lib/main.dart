@@ -93,8 +93,8 @@ class _MyAppState extends State<MyApp> {
                             child: GridControlButton(
                               label: 'PLAY',
                               color: grid.isPlaying
-                                  ? Color(0xFFffbdc0)
-                                  : Colors.white,
+                                  ? Color(0xFFcdedfd)
+                                  : Color(0xFFffbdc0),
                               onPressed: () =>
                                   grid.isPlaying ? grid.pause() : grid.play(),
                             ),
