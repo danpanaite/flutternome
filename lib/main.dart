@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutternome/grid.dart';
 
 import 'grid_button.dart';
-import 'grid_control_button.dart';
+import 'grid_control.dart';
 
 final gridSize = 10;
 final buttons = List.generate(
@@ -31,8 +31,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   initState() {
-    // Provider.of<Grid>(context, listen: false).play();
-
     super.initState();
   }
 
@@ -73,48 +71,7 @@ class _MyAppState extends State<MyApp> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
-                child: Consumer<Grid>(builder: (context, grid, child) {
-                  return Container(
-                    width: 350,
-                    height: 100,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(5.0),
-                        border:
-                            Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: GridControlButton(
-                              label: 'PLAY',
-                              color: grid.isPlaying
-                                  ? Color(0xFFcdedfd)
-                                  : Color(0xFFffbdc0),
-                              onPressed: () =>
-                                  grid.isPlaying ? grid.pause() : grid.play(),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: GridControlButton(
-                              label: 'RESET',
-                              onPressed: () => grid.reset(),
-                            ),
-                          ),
-                          GridControlButton(
-                            label: 'TURBO',
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+                child: GridControl(),
               ),
             ],
           ),
