@@ -61,17 +61,27 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
+                onTapDown: (details) {
+                  int column = (details.localPosition.dx / 25).floor();
+                  int row = (details.localPosition.dy / 25).floor();
+
+                  Provider.of<Grid>(context).isButtonSelected(column, row)
+                      ? Provider.of<Grid>(context).removeButton(column, row)
+                      : Provider.of<Grid>(context).addButton(column, row);
+
+                  print(details.localPosition);
+                },
                 onPanUpdate: (details) {
-                  int column = (details.localPosition.dx / 20).floor();
-                  int row = (details.localPosition.dy / 20).floor();
+                  int column = (details.localPosition.dx / 25).floor();
+                  int row = (details.localPosition.dy / 25).floor();
 
                   Provider.of<Grid>(context).addButton(column, row);
 
                   print(details.localPosition);
                 },
                 child: Container(
-                  width: 375,
-                  height: 375,
+                  width: 400,
+                  height: 400,
                   decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(5.0),

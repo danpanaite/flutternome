@@ -15,21 +15,24 @@ class GridButton extends StatelessWidget {
       builder: (context, grid, child) {
         return GestureDetector(
           child: Container(
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               border: Border.all(width: 2.0, color: Color(0xFF3e3e3e)),
-            ),
-            child: RaisedButton(
-              elevation: 5.0,
               color: grid.isButtonSelected(column, row)
                   ? grid.isPlaying ? Color(0xFFcdedfd) : Color(0xFFffbdc0)
                   : Colors.white,
-              onPressed: grid.isButtonSelected(column, row)
-                  ? () => Provider.of<Grid>(context).removeButton(column, row)
-                  : () => Provider.of<Grid>(context).addButton(column, row),
             ),
+            //   child: RaisedButton(
+            //     elevation: 5.0,
+            //     color: grid.isButtonSelected(column, row)
+            //         ? grid.isPlaying ? Color(0xFFcdedfd) : Color(0xFFffbdc0)
+            //         : Colors.white,
+            //     onPressed: grid.isButtonSelected(column, row)
+            //         ? () => Provider.of<Grid>(context).removeButton(column, row)
+            //         : () => Provider.of<Grid>(context).addButton(column, row),
+            //   ),
           ),
         );
       },

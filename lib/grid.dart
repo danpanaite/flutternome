@@ -9,15 +9,14 @@ final scale = [60, 63, 65, 67, 70];
 class Grid extends ChangeNotifier {
   final int gridSize;
   final int playSpeed;
-  Map<int, Map<int, bool>> _selectedButtons = new Map<int, Map<int, bool>>();
-
-  int selectedColumn = 0;
 
   StreamSubscription _subscription;
   List<int> _midiNotes;
-  Stopwatch _stopwatch = new Stopwatch();
+  var _stopwatch = new Stopwatch();
+  var _selectedColumn = 0;
+  var _selectedButtons = new Map<int, Map<int, bool>>();
 
-  Grid({this.gridSize = 6, this.playSpeed = 200}) {
+  Grid({this.gridSize = 6, this.playSpeed = 125}) {
     _midiNotes = List.generate(gridSize, (row) {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
@@ -54,7 +53,7 @@ class Grid extends ChangeNotifier {
   }
 
   void reset() {
-    _subscription.pause();
+    _subscription?.pause();
     _selectedButtons = new Map<int, Map<int, bool>>();
     notifyListeners();
   }
@@ -76,9 +75,9 @@ class Grid extends ChangeNotifier {
   }
 
   void playMidiNotes() {
-    selectedColumn = (selectedColumn + 1) % gridSize;
+    _selectedColumn = (_selectedColumn + 1) % gridSize;
 
-    _selectedButtons[selectedColumn]?.forEach((row, isSelected) {
+    _selectedButtons[_selectedColumn]?.forEach((row, isSelected) {
       if (isSelected) {
         FlutterMidi.playMidiNote(midi: _midiNotes[row]);
 
