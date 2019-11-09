@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 
-import 'grid_button.dart';
-
 final scale = [60, 63, 65, 67, 70];
 
 class Grid extends ChangeNotifier {
@@ -19,14 +17,14 @@ class Grid extends ChangeNotifier {
   List<int> _midiNotes;
   Stopwatch _stopwatch = new Stopwatch();
 
-  Grid({this.gridSize = 6, this.playSpeed = 150}) {
+  Grid({this.gridSize = 6, this.playSpeed = 200}) {
     _midiNotes = List.generate(gridSize, (row) {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
 
     FlutterMidi.unmute();
-    rootBundle.load("assets/Happy_Mellow.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Happy_Mellow.sf2");
+    rootBundle.load("assets/Sine_Wave.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Sine_Wave.sf2");
     });
   }
 
@@ -41,17 +39,17 @@ class Grid extends ChangeNotifier {
     return _selectedButtons[column][row];
   }
 
-  void addButton(GridButton button) {
-    if (!_selectedButtons.containsKey(button.column)) {
-      _selectedButtons[button.column] = new Map<int, bool>();
+  void addButton(int column, int row) {
+    if (!_selectedButtons.containsKey(column)) {
+      _selectedButtons[column] = new Map<int, bool>();
     }
 
-    _selectedButtons[button.column][button.row] = true;
+    _selectedButtons[column][row] = true;
     notifyListeners();
   }
 
-  void removeButton(GridButton button) {
-    _selectedButtons[button.column][button.row] = false;
+  void removeButton(int column, int row) {
+    _selectedButtons[column][row] = false;
     notifyListeners();
   }
 
@@ -72,7 +70,7 @@ class Grid extends ChangeNotifier {
 
     _subscription = Stream.periodic(
       Duration(milliseconds: playSpeed),
-    ).listen((value) => playMidiNotes);
+    ).listen((value) => playMidiNotes());
 
     notifyListeners();
   }
@@ -83,6 +81,9 @@ class Grid extends ChangeNotifier {
     _selectedButtons[selectedColumn]?.forEach((row, isSelected) {
       if (isSelected) {
         FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+
+        Future.delayed(Duration(milliseconds: 100),
+            () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
       }
     });
 

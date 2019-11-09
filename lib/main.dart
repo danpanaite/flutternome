@@ -5,7 +5,7 @@ import 'package:flutternome/grid.dart';
 import 'grid_button.dart';
 import 'grid_control.dart';
 
-final gridSize = 10;
+final gridSize = 16;
 final buttons = List.generate(
   gridSize,
   (columnIndex) => List.generate(
@@ -60,14 +60,24 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 350,
-                height: 350,
-                decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(5.0),
-                    border: Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
-                child: buttonGrid,
+              GestureDetector(
+                onPanUpdate: (details) {
+                  int column = (details.localPosition.dx / 20).floor();
+                  int row = (details.localPosition.dy / 20).floor();
+
+                  Provider.of<Grid>(context).addButton(column, row);
+
+                  print(details.localPosition);
+                },
+                child: Container(
+                  width: 375,
+                  height: 375,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
+                  child: buttonGrid,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
