@@ -72,9 +72,11 @@ packages:
   flutter_midi:
     dependency: "direct main"
     description:
-      name: flutter_midi
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/flutter_midi"
+      ref: "bug/resolve-future"
+      resolved-ref: "135c6021d26e5e3f61d369a581965b0805b09a64"
+      url: "git://github.com/danpanaite/flutter_midi.git"
+    source: git
     version: "1.0.0"
   flutter_test:
     dependency: "direct dev"
@@ -115,7 +117,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.1"
+    version: "1.4.0"
   pedantic:
     dependency: transitive
     description:

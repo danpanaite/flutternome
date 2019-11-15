@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 
@@ -22,12 +22,16 @@ class Grid extends ChangeNotifier {
     });
 
     FlutterMidi.unmute();
-    rootBundle.load("assets/Sine_Wave.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Sine_Wave.sf2");
+    rootBundle.load("assets/Perfect Sine.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Perfect Sine.sf2");
     });
   }
 
   bool get isPlaying => _subscription != null && !_subscription.isPaused;
+
+  bool isButtonTrigerred(int column, int row) {
+    return isButtonSelected(column, row) && column == _selectedColumn;
+  }
 
   bool isButtonSelected(int column, int row) {
     if (!_selectedButtons.containsKey(column) ||
@@ -77,14 +81,31 @@ class Grid extends ChangeNotifier {
   void playMidiNotes() {
     _selectedColumn = (_selectedColumn + 1) % gridSize;
 
-    _selectedButtons[_selectedColumn]?.forEach((row, isSelected) {
+    _selectedButtons[_selectedColumn]?.forEach((row, isSelected) async{
       if (isSelected) {
         FlutterMidi.playMidiNote(midi: _midiNotes[row]);
 
-        Future.delayed(Duration(milliseconds: 100),
+        Future.delayed(Duration(milliseconds: 125),
             () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
       }
     });
+
+    // if (_selectedButtons.containsKey(_selectedColumn)) {
+    //   var column = _selectedButtons[_selectedColumn];
+
+    //   for (var row in column.keys) {
+    //     if (column[row]) {
+    //       var test = await FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+
+    //       print(test);
+
+    //       Future.delayed(Duration(milliseconds: 100),
+    //           () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
+    //     }
+    //   }
+    // }
+
+    notifyListeners();
 
     print(_stopwatch.elapsedMilliseconds);
     _stopwatch.reset();

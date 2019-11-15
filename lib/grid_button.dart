@@ -13,16 +13,36 @@ class GridButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Grid>(
       builder: (context, grid, child) {
+        final isTriggered = grid.isButtonTrigerred(column, row);
+
+        // blue Color(0xFFcdedfd)
+        // light red Color(0xFFffbdc0)
+
+        final color = isTriggered
+            ? Color(0xFFa3c3d9).withOpacity(0.5)
+            : grid.isButtonSelected(column, row)
+                ? Color(0xFFa3c3d9)
+                : Colors.white;
+
         return GestureDetector(
           child: Container(
             width: 24,
             height: 24,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
-              border: Border.all(width: 2.0, color: Color(0xFF3e3e3e)),
-              color: grid.isButtonSelected(column, row)
-                  ? grid.isPlaying ? Color(0xFFcdedfd) : Color(0xFFffbdc0)
-                  : Colors.white,
+              border: !isTriggered
+                  ? Border.all(width: 2.0, color: Color(0xFF3e3e3e))
+                  : null,
+              boxShadow: isTriggered
+                  ? [
+                      BoxShadow(
+                        blurRadius: 12.0,
+                        spreadRadius: 2.0,
+                        color: Colors.white,
+                      ),
+                    ]
+                  : [],
+              color: color,
             ),
             //   child: RaisedButton(
             //     elevation: 5.0,

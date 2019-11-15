@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutternome/grid.dart';
-
-import 'grid_button.dart';
-import 'grid_control.dart';
+import 'package:flutternome/grid_button.dart';
+import 'package:flutternome/grid_control.dart';
 
 final gridSize = 16;
 final buttons = List.generate(

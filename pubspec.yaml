@@ -20,7 +20,11 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_midi: ^1.0.0
+  flutter_midi:
+    git:
+      url: git://github.com/danpanaite/flutter_midi.git
+      ref: bug/resolve-future
+      path: packages/flutter_midi
 
   provider: ^3.0.0
 
@@ -49,6 +53,7 @@ flutter:
    - assets/Piano.sf2
    - assets/Happy_Mellow.sf2
    - assets/Synth_E.sf2
+   - assets/Perfect Sine.sf2
    - assets/Sine_Wave.sf2
    - assets/Solar_Wind.sf2
   # An image asset can refer to one or more resolution-specific "variants", see
