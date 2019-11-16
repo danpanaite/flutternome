@@ -85,7 +85,7 @@ class Grid extends ChangeNotifier {
       if (isSelected) {
         FlutterMidi.playMidiNote(midi: _midiNotes[row]);
 
-        Future.delayed(Duration(milliseconds: 125),
+        Future.delayed(Duration(milliseconds: 100),
             () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
       }
     });
