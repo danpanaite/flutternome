@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutternome/grid.dart';
+import 'package:flutternome/grid_state.dart';
 
 class GridControl extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _GridControlState extends State<GridControl>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Grid>(builder: (context, grid, child) {
+    return Consumer<GridState>(builder: (context, grid, child) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

@@ -1,119 +1,66 @@
-import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_midi/flutter_midi.dart';
+import 'package:flutternome/grid_state.dart';
+import 'package:flutternome/grid_button.dart';
 
-final scale = [60, 63, 65, 67, 70];
-
-class Grid extends ChangeNotifier {
+class Grid extends StatelessWidget {
   final int gridSize;
-  final int playSpeed;
 
-  StreamSubscription _subscription;
-  List<int> _midiNotes;
-  var _stopwatch = new Stopwatch();
-  var _selectedColumn = 0;
-  var _selectedButtons = new Map<int, Map<int, bool>>();
-
-  Grid({this.gridSize = 6, this.playSpeed = 125}) {
-    _midiNotes = List.generate(gridSize, (row) {
-      return scale[row % 5] + 12 * (row / 5).floor();
-    });
-
-    FlutterMidi.unmute();
-    rootBundle.load("assets/Perfect Sine.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Perfect Sine.sf2");
-    });
-  }
-
-  bool get isPlaying => _subscription != null && !_subscription.isPaused;
-
-  bool isButtonTrigerred(int column, int row) {
-    return isButtonSelected(column, row) && column == _selectedColumn;
-  }
-
-  bool isButtonSelected(int column, int row) {
-    if (!_selectedButtons.containsKey(column) ||
-        !_selectedButtons[column].containsKey(row)) {
-      return false;
-    }
-
-    return _selectedButtons[column][row];
-  }
-
-  void addButton(int column, int row) {
-    if (!_selectedButtons.containsKey(column)) {
-      _selectedButtons[column] = new Map<int, bool>();
-    }
-
-    _selectedButtons[column][row] = true;
-    notifyListeners();
-  }
-
-  void removeButton(int column, int row) {
-    _selectedButtons[column][row] = false;
-    notifyListeners();
-  }
-
-  void reset() {
-    _subscription?.pause();
-    _selectedButtons = new Map<int, Map<int, bool>>();
-    notifyListeners();
-  }
-
-  void pause() {
-    _subscription.pause();
-    notifyListeners();
-  }
-
-  void play() {
-    _subscription?.cancel();
-    _stopwatch.start();
-
-    _subscription = Stream.periodic(
-      Duration(milliseconds: playSpeed),
-    ).listen((value) => playMidiNotes());
-
-    notifyListeners();
-  }
-
-  void playMidiNotes() {
-    _selectedColumn = (_selectedColumn + 1) % gridSize;
-
-    _selectedButtons[_selectedColumn]?.forEach((row, isSelected) async{
-      if (isSelected) {
-        FlutterMidi.playMidiNote(midi: _midiNotes[row]);
-
-        Future.delayed(Duration(milliseconds: 100),
-            () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
-      }
-    });
-
-    // if (_selectedButtons.containsKey(_selectedColumn)) {
-    //   var column = _selectedButtons[_selectedColumn];
-
-    //   for (var row in column.keys) {
-    //     if (column[row]) {
-    //       var test = await FlutterMidi.playMidiNote(midi: _midiNotes[row]);
-
-    //       print(test);
-
-    //       Future.delayed(Duration(milliseconds: 100),
-    //           () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
-    //     }
-    //   }
-    // }
-
-    notifyListeners();
-
-    print(_stopwatch.elapsedMilliseconds);
-    _stopwatch.reset();
-  }
+  const Grid({Key key, this.gridSize}) : super(key: key);
 
   @override
-  void dispose() {
-    _subscription?.cancel();
-    super.dispose();
+  Widget build(BuildContext context) {
+    final buttons = List.generate(
+      gridSize,
+      (columnIndex) => List.generate(
+        gridSize,
+        (rowIndex) => GridButton(rowIndex, columnIndex),
+      ),
+    );
+
+    var buttonGrid = Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: buttons
+          .map(
+            (buttonColumn) => Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttonColumn,
+            ),
+          )
+          .toList(),
+    );
+
+    return GestureDetector(
+      onTapDown: (details) {
+        int column = (details.localPosition.dx / 25).floor();
+        int row = (details.localPosition.dy / 25).floor();
+
+        Provider.of<GridState>(context).isButtonSelected(column, row)
+            ? Provider.of<GridState>(context).removeButton(column, row)
+            : Provider.of<GridState>(context).addButton(column, row);
+
+        print(details.localPosition);
+      },
+      onPanUpdate: (details) {
+        int column = (details.localPosition.dx / 25).floor();
+        int row = (details.localPosition.dy / 25).floor();
+
+        Provider.of<GridState>(context).addButton(column, row);
+
+        print(details.localPosition);
+      },
+      child: Container(
+        width: 400,
+        height: 400,
+        decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(5.0),
+            border: Border.all(width: 2.0, color: Color(0xFF3e3e3e))),
+        child: buttonGrid,
+      ),
+    );
   }
 }

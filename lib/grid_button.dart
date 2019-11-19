@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'grid.dart';
+import 'package:flutternome/grid_state.dart';
 
 class GridButton extends StatelessWidget {
   final int row;
@@ -11,7 +11,7 @@ class GridButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Grid>(
+    return Consumer<GridState>(
       builder: (context, grid, child) {
         final isTriggered = grid.isButtonTrigerred(column, row);
 
