@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutternome/grid_size.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutternome/grid_state.dart';
@@ -35,8 +36,8 @@ class Grid extends StatelessWidget {
 
     return GestureDetector(
       onTapDown: (details) {
-        int column = (details.localPosition.dx / 25).floor();
-        int row = (details.localPosition.dy / 25).floor();
+        int column = (details.localPosition.dx / GridSize.divisionWidth).floor();
+        int row = (details.localPosition.dy / GridSize.divisionHeight).floor();
 
         Provider.of<GridState>(context).isButtonSelected(column, row)
             ? Provider.of<GridState>(context).removeButton(column, row)
@@ -45,16 +46,16 @@ class Grid extends StatelessWidget {
         print(details.localPosition);
       },
       onPanUpdate: (details) {
-        int column = (details.localPosition.dx / 25).floor();
-        int row = (details.localPosition.dy / 25).floor();
+        int column = (details.localPosition.dx / GridSize.divisionWidth).floor();
+        int row = (details.localPosition.dy / GridSize.divisionHeight).floor();
 
         Provider.of<GridState>(context).addButton(column, row);
 
         print(details.localPosition);
       },
       child: Container(
-        width: 400,
-        height: 400,
+        width: GridSize.width,
+        height: GridSize.height,
         decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(5.0),

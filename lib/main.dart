@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutternome/grid.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutternome/grid_state.dart';
 import 'package:flutternome/grid_control.dart';
+import 'package:flutternome/grid.dart';
+import 'package:flutternome/grid_size.dart';
 
 void main() {
   runApp(
     ChangeNotifierProvider(
-      builder: (context) => GridState(gridSize: 16),
+      builder: (context) => GridState(gridSize: GridSize.size),
       child: MyApp(),
     ),
   );
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Grid(gridSize: 16),
+              Grid(gridSize: GridSize.size),
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
                 child: GridControl(),

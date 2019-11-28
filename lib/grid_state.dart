@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 
+// Minor pentatonic scale
 final scale = [60, 63, 65, 67, 70];
 
 class GridState extends ChangeNotifier {
@@ -21,9 +22,8 @@ class GridState extends ChangeNotifier {
       return scale[row % 5] + 12 * (row / 5).floor();
     });
 
-    FlutterMidi.unmute();
-    rootBundle.load("assets/Perfect Sine.sf2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Perfect Sine.sf2");
+    rootBundle.load("assets/Perfect_Sine.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Perfect_Sine.sf2");
     });
   }
 
@@ -74,21 +74,36 @@ class GridState extends ChangeNotifier {
     _subscription = Stream.periodic(
       Duration(milliseconds: playSpeed),
     ).listen((value) => playMidiNotes());
-
-    notifyListeners();
   }
 
   void playMidiNotes() {
     _selectedColumn = (_selectedColumn + 1) % gridSize;
 
-    _selectedButtons[_selectedColumn]?.forEach((row, isSelected) async{
-      if (isSelected) {
-        FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+    // _selectedButtons[_selectedColumn]?.forEach((row, isSelected) async {
+    //   if (isSelected) {
+    //     FlutterMidi.playMidiNote(midi: _midiNotes[row]);
+
+    //     Future.delayed(Duration(milliseconds: 100),
+    //         () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
+    //   }
+    // });
+
+    // notifyListeners();
+
+    Future.forEach(_selectedButtons[_selectedColumn]?.entries ?? [], (entry) {
+      if (entry.value) {
+        var playNotePromise =
+            FlutterMidi.playMidiNote(midi: _midiNotes[entry.key]);
 
         Future.delayed(Duration(milliseconds: 100),
-            () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
+            () => FlutterMidi.stopMidiNote(midi: _midiNotes[entry.key]));
+
+        return playNotePromise;
       }
-    });
+
+      return Future.value(null);
+    })
+    .then((result) => notifyListeners());
 
     // if (_selectedButtons.containsKey(_selectedColumn)) {
     //   var column = _selectedButtons[_selectedColumn];
@@ -105,7 +120,10 @@ class GridState extends ChangeNotifier {
     //   }
     // }
 
-    notifyListeners();
+    // Future.delayed(Duration(milliseconds: 125))
+    //     .then((result) => notifyListeners());
+
+    // notifyListeners();
 
     print(_stopwatch.elapsedMilliseconds);
     _stopwatch.reset();
