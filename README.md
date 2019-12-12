@@ -1,16 +1,15 @@
 # flutternome
 
-A new Flutter project.
+Music grid instrument inspired by the Tonematrix and the Monome.
 
-## Getting Started
+![screenshot](screenshots/screenshot.png)
 
-This project is a starting point for a Flutter application.
+# Videos
 
-A few resources to get you started if this is your first Flutter project:
+- [8x8 grid](https://streamable.com/uqe1y)
+- [16x16 grid](https://streamable.com/9thqh)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+# Links
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Tonematrix:](https://tonematrix.audiotool.com/) Amazing flash app that allows you create beautiful melodies
+- [Monome:](https://monome.org/docs/grid/) Minimalist DAW that can be programmed to work as a tonematrix
