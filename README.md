@@ -1,6 +1,6 @@
 # flutternome
 
-Music grid instrument inspired by the Tonematrix and the Monome.
+Music grid instrument inspired by the Tonematrix and the Monome grid.
 
 ![screenshot](screenshots/screenshot.png)
 
