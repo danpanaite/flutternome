@@ -42,16 +42,12 @@ class Grid extends StatelessWidget {
         Provider.of<GridState>(context).isButtonSelected(column, row)
             ? Provider.of<GridState>(context).removeButton(column, row)
             : Provider.of<GridState>(context).addButton(column, row);
-
-        print(details.localPosition);
       },
       onPanUpdate: (details) {
         int column = (details.localPosition.dx / GridSize.divisionWidth).floor();
         int row = (details.localPosition.dy / GridSize.divisionHeight).floor();
 
         Provider.of<GridState>(context).addButton(column, row);
-
-        print(details.localPosition);
       },
       child: Container(
         width: GridSize.width,

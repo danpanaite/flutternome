@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 
-// Minor pentatonic scale
-final scale = [60, 63, 65, 67, 70];
+// C Major pentatonic scale
+final scale = [48, 50, 52, 55, 57];
 
 class GridState extends ChangeNotifier {
   final int gridSize;
@@ -13,7 +13,6 @@ class GridState extends ChangeNotifier {
 
   StreamSubscription _subscription;
   List<int> _midiNotes;
-  var _stopwatch = new Stopwatch();
   var _selectedColumn = 0;
   var _selectedButtons = new Map<int, Map<int, bool>>();
 
@@ -69,7 +68,6 @@ class GridState extends ChangeNotifier {
 
   void play() {
     _subscription?.cancel();
-    _stopwatch.start();
 
     _subscription = Stream.periodic(
       Duration(milliseconds: playSpeed),
@@ -79,54 +77,13 @@ class GridState extends ChangeNotifier {
   void playMidiNotes() {
     _selectedColumn = (_selectedColumn + 1) % gridSize;
 
-    // _selectedButtons[_selectedColumn]?.forEach((row, isSelected) async {
-    //   if (isSelected) {
-    //     FlutterMidi.playMidiNote(midi: _midiNotes[row]);
-
-    //     Future.delayed(Duration(milliseconds: 100),
-    //         () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
-    //   }
-    // });
-
-    // notifyListeners();
-
-    Future.forEach(_selectedButtons[_selectedColumn]?.entries ?? [], (entry) {
-      if (entry.value) {
-        var playNotePromise =
-            FlutterMidi.playMidiNote(midi: _midiNotes[entry.key]);
-
-        Future.delayed(Duration(milliseconds: 100),
-            () => FlutterMidi.stopMidiNote(midi: _midiNotes[entry.key]));
-
-        return playNotePromise;
+    _selectedButtons[_selectedColumn]?.forEach((row, isSelected) {
+      if (isSelected) {
+        FlutterMidi.playMidiNote(midi: _midiNotes[row]);
       }
+    });
 
-      return Future.value(null);
-    })
-    .then((result) => notifyListeners());
-
-    // if (_selectedButtons.containsKey(_selectedColumn)) {
-    //   var column = _selectedButtons[_selectedColumn];
-
-    //   for (var row in column.keys) {
-    //     if (column[row]) {
-    //       var test = await FlutterMidi.playMidiNote(midi: _midiNotes[row]);
-
-    //       print(test);
-
-    //       Future.delayed(Duration(milliseconds: 100),
-    //           () => FlutterMidi.stopMidiNote(midi: _midiNotes[row]));
-    //     }
-    //   }
-    // }
-
-    // Future.delayed(Duration(milliseconds: 125))
-    //     .then((result) => notifyListeners());
-
-    // notifyListeners();
-
-    print(_stopwatch.elapsedMilliseconds);
-    _stopwatch.reset();
+    notifyListeners();
   }
 
   @override
