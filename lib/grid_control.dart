@@ -67,7 +67,10 @@ class _GridControlState extends State<GridControl>
               ),
             ),
             color: Colors.white,
-            onPressed: () => grid.reset(),
+            onPressed: () {
+              _animationController.reverse();
+              grid.reset();
+            },
             icon: Icon(Icons.refresh),
             label: Text("RESET"),
           ),
