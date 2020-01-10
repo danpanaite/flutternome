@@ -14,7 +14,7 @@ class GridButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<GridState>(
       builder: (context, grid, child) {
-        final isTriggered = grid.isButtonTrigerred(column, row);
+        final isTriggered = grid.isButtonTriggered(column, row);
 
         final color = isTriggered
             ? Color(0xFFa3c3d9).withOpacity(0.5)

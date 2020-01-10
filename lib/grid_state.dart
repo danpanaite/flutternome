@@ -28,7 +28,7 @@ class GridState extends ChangeNotifier {
 
   bool get isPlaying => _subscription != null && !_subscription.isPaused;
 
-  bool isButtonTrigerred(int column, int row) {
+  bool isButtonTriggered(int column, int row) {
     return isButtonSelected(column, row) && column == _selectedColumn;
   }
 
