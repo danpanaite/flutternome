@@ -58,6 +58,7 @@ class GridState extends ChangeNotifier {
   void reset() {
     _subscription?.pause();
     _selectedButtons = new Map<int, Map<int, bool>>();
+    _selectedColumn = 0;
     notifyListeners();
   }
 
