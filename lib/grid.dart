@@ -6,7 +6,6 @@ import 'package:flutternome/grid_state.dart';
 import 'package:flutternome/grid_button.dart';
 
 class Grid extends StatelessWidget {
-
   final int gridSize;
 
   const Grid({Key key, this.gridSize}) : super(key: key);
@@ -17,18 +16,17 @@ class Grid extends StatelessWidget {
       gridSize,
       (columnIndex) => List.generate(
         gridSize,
-        (rowIndex) => GridButton(
-          rowIndex,
-          columnIndex,
-          onTapDown: (details) {
-            Provider.of<GridState>(context).isButtonSelected(columnIndex, rowIndex)
-              ? Provider.of<GridState>(context).removeButton(columnIndex, rowIndex)
-              : Provider.of<GridState>(context).addButton(columnIndex, rowIndex);
-          },
-          onPanUpdate: (details) {
-            Provider.of<GridState>(context).addButton(columnIndex, rowIndex);
-          }
-        ),
+        (rowIndex) => GridButton(rowIndex, columnIndex, onTapDown: (details) {
+          Provider.of<GridState>(context, listen: false)
+                  .isButtonSelected(columnIndex, rowIndex)
+              ? Provider.of<GridState>(context, listen: false)
+                  .removeButton(columnIndex, rowIndex)
+              : Provider.of<GridState>(context, listen: false)
+                  .addButton(columnIndex, rowIndex);
+        }, onPanUpdate: (details) {
+          Provider.of<GridState>(context, listen: false)
+              .addButton(columnIndex, rowIndex);
+        }),
       ),
     );
 
