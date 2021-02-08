@@ -9,7 +9,7 @@ import 'package:flutternome/grid_size.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      builder: (context) => GridState(gridSize: GridSize.size),
+      create: (context) => GridState(gridSize: GridSize.size),
       child: MyApp(),
     ),
   );
